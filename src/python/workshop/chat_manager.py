@@ -33,8 +33,7 @@ from utilities import Utilities
 tracer = trace.get_tracer("zava_agent.tracing")
 logger = logging.getLogger(__name__)
 
-
-RESPONSE_TIMEOUT_SECONDS = 60
+config = Config()
 
 
 class AgentManagerProtocol(Protocol):
@@ -190,10 +189,10 @@ class ChatManager:
                             thread_id=thread.id,
                             agent_id=agent.id,
                             event_handler=web_handler,
-                            max_completion_tokens=Config.MAX_COMPLETION_TOKENS,
-                            max_prompt_tokens=Config.MAX_PROMPT_TOKENS,
-                            temperature=Config.TEMPERATURE,
-                            top_p=Config.TOP_P,
+                            max_completion_tokens=config.max_completion_tokens,
+                            max_prompt_tokens=config.max_prompt_tokens,
+                            temperature=config.temperature,
+                            top_p=config.top_p,
                             tool_resources=tool_resources,
                             truncation_strategy=truncation_strategy,
                         ) as stream:
@@ -235,7 +234,9 @@ class ChatManager:
                             logger.warning("⚠️ Token queue size is large: %d", queue_size)
 
                         # Wait for next token with timeout
-                        item = await asyncio.wait_for(web_handler.token_queue.get(), timeout=RESPONSE_TIMEOUT_SECONDS)
+                        item = await asyncio.wait_for(
+                            web_handler.token_queue.get(), timeout=config.response_timeout_seconds
+                        )
                         if item is None:  # End of stream signal
                             break
 
@@ -254,7 +255,7 @@ class ChatManager:
                             yield ChatResponse(content=str(item))
 
                     except asyncio.TimeoutError:
-                        yield ChatResponse(error="Response timeout after 60 seconds")
+                        yield ChatResponse(error=f"Response timeout after {config.response_timeout_seconds} seconds")
                         break
             finally:
                 # Ensure the stream task is properly cleaned up

@@ -232,7 +232,7 @@ async def run_http_server() -> None:
     # Only configure azure monitor if running in HTTP mode
     # when running in STDIO mode, it will already be configured
     # from the host application
-    configure_azure_monitor(connection_string=config.APPLICATIONINSIGHTS_CONNECTION_STRING)
+    configure_azure_monitor(connection_string=config.applicationinsights_connection_string)
 
     # Ensure a single connection pool is created once for the process.
     try:

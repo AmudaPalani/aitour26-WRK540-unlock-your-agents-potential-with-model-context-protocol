@@ -29,7 +29,7 @@ attrs==25.3.0
     #   aiohttp
     #   jsonschema
     #   referencing
-azure-ai-agents==1.2.0b2
+azure-ai-agents==1.2.0b4
     # via
     #   -r requirements.in
     #   azure-ai-projects

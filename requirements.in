@@ -18,7 +18,7 @@ asyncpg>=0.30.0,<0.31.0
 psycopg2-binary>=2.9.10, <3.0.0
 
 # Azure AI and authentication
-azure-ai-agents==1.2.0b2
+azure-ai-agents==1.2.0b4
 azure-ai-projects==1.0.0
 
 azure-core-tracing-opentelemetry>=1.0.0b12,<2.0.0

@@ -35,7 +35,7 @@ config = Config()
 AsyncPGInstrumentor().instrument()
 
 # PostgreSQL connection configuration
-POSTGRES_URL = config.POSTGRES_URL
+POSTGRES_URL = config.postgres_url
 
 SCHEMA_NAME = "retail"
 MANAGER_ID = ""

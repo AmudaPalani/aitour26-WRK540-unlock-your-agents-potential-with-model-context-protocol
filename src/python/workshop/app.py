@@ -26,6 +26,7 @@ from opentelemetry import trace
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from utilities import Utilities
 
+config = Config()
 trace_scenario = "Zava Agent Initialization"
 tracer = trace.get_tracer("zava_agent.tracing")
 logger = logging.getLogger(__name__)
@@ -54,7 +55,7 @@ class AgentManager:
 
         mcp_server_tools = McpTool(
             server_label="ZavaSalesAnalysisMcpServer",
-            server_url=Config.DEV_TUNNEL_URL,
+            server_url=config.dev_tunnel_url,
             allowed_tools=[
                 "get_multiple_table_schemas",
                 "execute_sales_query",
@@ -73,14 +74,11 @@ class AgentManager:
         self.project_client: AIProjectClient | None = None
         self.agent: Agent | None = None
         self.tracer = tracer
-        self.application_insights_connection_string = Config.APPLICATIONINSIGHTS_CONNECTION_STRING
+        self.application_insights_connection_string = config.applicationinsights_connection_string
 
     async def initialize(self, instructions_file: str) -> bool:
         """Initialize the agent with tools and instructions."""
         try:
-            # Validate configuration
-            Config.validate_required_env_vars()
-
             # Load LLM instructions
             instructions = self.utilities.load_instructions(instructions_file)
 
@@ -90,33 +88,37 @@ class AgentManager:
             # Create clients
             self.agents_client = AgentsClient(
                 credential=credential,
-                endpoint=Config.PROJECT_ENDPOINT,
+                endpoint=config.project_endpoint,
             )
 
             self.project_client = AIProjectClient(
                 credential=credential,
-                endpoint=Config.PROJECT_ENDPOINT,
+                endpoint=config.project_endpoint,
             )
 
             await self._setup_agent_tools()
+            if len(self.toolset.definitions) == 0:
+                raise ValueError(
+                    "Toolset is not initialized - you must uncomment the tools in the _setup_agent_tools method"
+                )
 
             configure_azure_monitor(connection_string=self.application_insights_connection_string)
 
             with self.tracer.start_as_current_span(trace_scenario):
                 # Create agent
                 self.agent = await self.agents_client.create_agent(
-                    model=Config.GPT_MODEL_DEPLOYMENT_NAME,
-                    name=Config.AGENT_NAME,
+                    model=config.gpt_model_deployment_name,
+                    name=config.agent_name,
                     instructions=instructions,
                     toolset=self.toolset,
-                    temperature=Config.TEMPERATURE,
+                    temperature=config.temperature,
                 )
                 logger.info("Created agent, ID: %s", self.agent.id)
 
             return True
 
         except Exception as e:
-            logger.error("Agent initialization failed: %s", str(e))
+            logger.error("❌ Agent initialization failed: %s", str(e))
             return False
 
     @property
@@ -140,7 +142,9 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     success = await agent_manager.initialize(INSTRUCTIONS_FILE)
 
     if not success:
-        logger.warning("Agent initialization failed. Check your configuration.")
+        error_msg = "❌ Agent initialization failed. Check your configuration."
+        logger.error(error_msg)
+        raise RuntimeError(error_msg)
     elif agent_manager.is_initialized and agent_manager.agent:
         logger.info("✅ Agent initialized successfully with ID: %s", agent_manager.agent.id)
 
