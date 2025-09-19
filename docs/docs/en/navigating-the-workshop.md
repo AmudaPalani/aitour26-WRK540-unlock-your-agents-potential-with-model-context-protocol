@@ -23,6 +23,13 @@ Snippets appear in gray boxes. Hover to reveal the copy icon, then click to copy
 # Example text snippet
 ```
 
+### Deeper dive for Developers
+
+Some sections include additional info for developers. Expand these by clicking the blue info icon.
+
+??? info "For Developers"
+    These sections provide extra context or technical details useful for developers.
+
 ## Open the Lab Instructions in Your Computer's Browser
 
 If the lab instructions are slow to scroll in the lab environment, try copying the instructions’ URL and opening it in **your computer’s local browser** for a smoother experience.

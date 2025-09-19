@@ -116,17 +116,16 @@ From VS Code, stop the agent app by pressing <kbd>Shift + F5</kbd>.
 
     In this section, you will implement semantic search using the Model Context Protocol (MCP) to enhance the agent's capabilities.
 
-    1. Press <kbd>F1</kbd> to **open** the VS Code Command Palette.
-    2. Type **Open File** and select **File: Open File...**.
-    3. **Paste** the following path into the file picker and press <kbd>Enter</kbd>:
+    1. Select the **Explorer** icon from the sidebar of VS Code.
+    2. Navtigate to the `mcp_server\sales_analysis` folder.
+    3. Open the `sales_analysis_tools.py` file.
+    4. This file contains the MCP tools for the sales analysis agent, including the semantic search tool.
 
-        ```text
-        /workspace/src/python/mcp_server/sales_analysis/sales_analysis.py
-        ```
+    ![Open MCP Server Tools in VS Code](../media/vs-code-open-mcp-server.png)
 
-    4. Scroll down to around line 70 and look for the `semantic_search_products` method. This method is responsible for performing semantic search on the sales data. You'll notice the **@mcp.tool()** decorator is commented out. This decorator is used to register the method as an MCP tool, allowing it to be called by the agent.
+    5. Scroll down to around line 70 and look for the `semantic_search_products` method. This method is responsible for performing semantic search on the sales data. You'll notice the **@mcp.tool()** decorator is commented out. This decorator is used to register the method as an MCP tool, allowing it to be called by the agent.
 
-    5. Uncomment the `@mcp.tool()` decorator by removing the `#` at the beginning of the line. This will enable the semantic search tool.
+    6. Uncomment the `@mcp.tool()` decorator by removing the `#` at the beginning of the line. This will enable the semantic search tool.
 
         ```python
         # @mcp.tool()
@@ -136,9 +135,25 @@ From VS Code, stop the agent app by pressing <kbd>Shift + F5</kbd>.
             ...
         ```
 
-    6. Next, you need to enable the Agent instructions to use the semantic search tool. Switch back to the `app.py` file.
-    7. Scroll down to around line 30 and find the line `# INSTRUCTIONS_FILE = "instructions/mcp_server_tools_with_semantic_search.txt"`.
-    8. Uncomment the line by removing the `#` at the beginning. This will enable the agent to use the semantic search tool.
+        ??? info "For Developers: Set a breakpoint in the semantic search method and debug"
+            **Prerequisites:** These instructions assume you're familiar with setting breakpoints in VS Code. If you need help with this, see the [VS Code documentation on breakpoints](https://code.visualstudio.com/docs/debugtest/debugging#_breakpoints){:target="_blank"}.
+            
+            **Purpose:** Setting a breakpoint in the `semantic_search_products` method lets you observe exactly how the semantic search process works, including query processing and database interactions.
+
+            **Steps:**
+            
+            1. **Set the breakpoint:** Click in the gutter (left margin) next to line 104, where you see `rls_user_id = get_rls_user_id(ctx)`. A red dot will appear, confirming the breakpoint is set.
+
+            2. **Debug and observe:** When you run the agent app in debug mode, execution will pause at this breakpoint. You can then:
+               - Inspect variable values
+               - Step through the code line by line
+               - Observe how the RLS user ID is extracted from the MCP request header
+               - Watch the query get converted to a vector
+               - See the semantic search execute against the PostgreSQL database
+
+    7. Next, you need to enable the Agent instructions to use the semantic search tool. Switch back to the `app.py` file.
+    8. Scroll down to around line 30 and find the line `# INSTRUCTIONS_FILE = "instructions/mcp_server_tools_with_semantic_search.txt"`.
+    9. Uncomment the line by removing the `#` at the beginning. This will enable the agent to use the semantic search tool.
 
         ```python
         INSTRUCTIONS_FILE = "instructions/mcp_server_tools_with_semantic_search.txt"
