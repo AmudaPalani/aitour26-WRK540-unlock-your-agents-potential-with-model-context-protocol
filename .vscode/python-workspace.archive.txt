@@ -1,0 +1,186 @@
+{
+    "folders": [
+        {
+            "path": "../src/python/workshop"
+        },
+        {
+            "path": "../src/python/mcp_server"
+        },
+        {
+            "path": "../src/shared"
+        }
+    ],
+    "settings": {
+        "peacock.remoteColor": "#3776AB",
+        "files.exclude": {
+            "**/__pycache__": true
+        },
+        "workbench.colorCustomizations": {
+            "activityBar.activeBackground": "#4f90c6",
+            "activityBar.background": "#4f90c6",
+            "activityBar.foreground": "#15202b",
+            "activityBar.inactiveForeground": "#15202b99",
+            "activityBarBadge.background": "#902f64",
+            "activityBarBadge.foreground": "#e7e7e7",
+            "commandCenter.border": "#e7e7e799",
+            "sash.hoverBorder": "#4f90c6",
+            "statusBar.background": "#3776ab",
+            "statusBar.foreground": "#e7e7e7",
+            "statusBarItem.hoverBackground": "#4f90c6",
+            "statusBarItem.remoteBackground": "#3776ab",
+            "statusBarItem.remoteForeground": "#e7e7e7",
+            "titleBar.activeBackground": "#3776ab",
+            "titleBar.activeForeground": "#e7e7e7",
+            "titleBar.inactiveBackground": "#3776ab99",
+            "titleBar.inactiveForeground": "#e7e7e799"
+        },
+        "peacock.color": "#3776AB",
+        "workbench.startupEditor": "none",
+        "python.analysis.extraPaths": [
+            "./src/python/workshop"
+        ],
+        "[python]": {
+            "editor.defaultFormatter": "charliermarsh.ruff",
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": "explicit",
+                "source.fixAll.ruff": "explicit"
+            }
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Open Workspace Files",
+                "type": "shell",
+                "command": "code",
+                "args": [
+                    "${workspaceFolder:workshop}/app.py",
+                    "${workspaceFolder:shared}/instructions/mcp_server_tools_with_code_interpreter.txt",
+                    "${workspaceFolder:shared}/instructions/mcp_server_tools_with_semantic_search.txt",
+                    "${workspaceFolder:mcp_server}/sales_analysis/sales_analysis.py",
+                ],
+                "group": "build",
+                "runOptions": {
+                    "runOn": "folderOpen"
+                },
+                "presentation": {
+                    "echo": false,
+                    "reveal": "never",
+                    "focus": false,
+                    "panel": "shared",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "DevTunnel",
+                "type": "shell",
+                "command": "pwsh",
+                "args": [
+                    "${workspaceFolder:shared}/scripts/start_devtunnel.ps1"
+                ],
+                "options": {
+                    "cwd": "${workspaceFolder:workshop}"
+                },
+                "group": "build",
+                "isBackground": true,
+                "problemMatcher": {
+                    "owner": "devtunnel",
+                    "pattern": {
+                        "regexp": "^.*$"
+                    },
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": "^.*(Starting DevTunnel).*$",
+                        "endsPattern": "^.*(Ready to accept connections for tunnel:).*$"
+                    }
+                }
+            },
+            {
+                "label": "Web Chat",
+                "type": "shell",
+                "command": "python",
+                "args": [
+                    "app.py"
+                ],
+                "options": {
+                    "cwd": "${workspaceFolder:shared}/webapp"
+                },
+                "group": "build",
+                "isBackground": true,
+                "problemMatcher": {
+                    "owner": "webapp",
+                    "pattern": {
+                        "regexp": "^.*$"
+                    },
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": "^.*Starting web interface on port.*$",
+                        "endsPattern": "^.*Uvicorn running on.*$"
+                    }
+                }
+            },
+            {
+                "label": "Start DevTunnel and Web App",
+                "dependsOrder": "parallel",
+                "dependsOn": [
+                    "DevTunnel",
+                    "Web Chat"
+                ]
+            }
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "compounds": [
+            {
+                "name": "🌎🤖Debug Compound: Agent and MCP (http)",
+                "configurations": [
+                    "Debug: MCP Server (workshop)",
+                    "Debug: Agent Manager (workshop)"
+                ],
+                "preLaunchTask": "Start DevTunnel and Web App",
+                "stopAll": true
+            }
+        ],
+        "configurations": [
+            {
+                "name": "Debug: Agent Manager (workshop)",
+                "type": "debugpy",
+                "request": "launch",
+                "program": "app.py",
+                "cwd": "${workspaceFolder:workshop}",
+                "console": "integratedTerminal",
+                "consoleName": "Agent Manager (workshop)",
+                "args": [],
+                "env": {
+                    "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                    "MAP_MCP_FUNCTIONS": "false"
+                },
+                "justMyCode": true
+            },
+            {
+                "name": "Debug: MCP Server (workshop)",
+                "type": "debugpy",
+                "request": "launch",
+                "program": "sales_analysis.py",
+                "cwd": "${workspaceFolder:mcp_server}/sales_analysis",
+                "console": "integratedTerminal",
+                "consoleName": "MCP Server (workshop)",
+                "args": [],
+                "env": {
+                    "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+                },
+                "justMyCode": true
+            }
+        ]
+    }
+}
