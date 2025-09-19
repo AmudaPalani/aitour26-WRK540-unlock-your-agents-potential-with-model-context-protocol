@@ -66,7 +66,7 @@ In this lab, you'll enable two powerful tools that work together: the Code Inter
 
     ## Start the Agent App
 
-    1. Select the **Run and Debug** icon on the left sidebar of VS Code.
+    1. Select the **Run and Debug** icon from the sidebar of VS Code.
     2. Select the "**🌎🤖Debug Compound: Agent and MCP (http)**" as the launch configuration.
     3. Select the green **Run** button (or press <kbd>F5</kbd>) to start the agent app.
 
@@ -89,7 +89,7 @@ In this lab, you'll enable two powerful tools that work together: the Code Inter
 
         Select the following link to open the Web Chat app in the browser.
 
-        [Open Web Chat](http://localhost:8005){:target="_blank"}
+        [Open Web Chat @ http://localhost:8005](http://localhost:8005){:target="_blank"}
 
     === "Self-Guided Learners"
 
