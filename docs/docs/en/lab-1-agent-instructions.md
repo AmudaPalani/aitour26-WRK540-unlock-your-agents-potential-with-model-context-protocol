@@ -13,6 +13,8 @@ The purpose of agent instructions is to define the agent's behavior, including h
 1. From the VS Code Explorer, navigate to the `shared/instructions` folder.
 2. **Open** the `mcp_server_tools_with_code_interpreter.txt` file.
 
+![Open Agent Instructions](../media/vs-code-instructions-folder.png)
+
 ### Review the Agent Instructions
 
 Review how the instructions define the agent app’s behavior:
