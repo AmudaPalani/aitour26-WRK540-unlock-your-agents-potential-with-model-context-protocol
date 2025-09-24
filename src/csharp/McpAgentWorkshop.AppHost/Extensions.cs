@@ -13,7 +13,7 @@ public static class Extensions
     static readonly string sourceFolder = Path.Combine(Environment.CurrentDirectory, "..", "..");
     static readonly string virtualEnvironmentPath = OperatingSystem.IsWindows() ?
         Path.Join(sourceFolder, "python", "workshop", ".venv") :
-        "/usr/local/python/current";
+        "/usr/local";
 
     public static IResourceBuilder<PythonAppResource> WithPostgres(this IResourceBuilder<PythonAppResource> builder, IResourceBuilder<IResourceWithConnectionString> db)
     {
