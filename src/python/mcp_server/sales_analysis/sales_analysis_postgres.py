@@ -74,7 +74,11 @@ class PostgreSQLSchemaProvider:
         if self.connection_pool is None:
             try:
                 self.connection_pool = await asyncpg.create_pool(
-                    self.postgres_config,
+                    host="127.0.0.1",
+                    port=5432,
+                    user="postgres",
+                    password="P@ssw0rd!",
+                    database="zava",
                     min_size=1,  # Minimum connections in pool
                     max_size=3,  # Very conservative pool size
                     command_timeout=30,  # 30 second query timeout

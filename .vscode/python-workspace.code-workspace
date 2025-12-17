@@ -37,7 +37,8 @@
         "peacock.color": "#3776AB",
         "workbench.startupEditor": "none",
         "python.analysis.extraPaths": [
-            "./src/python/workshop"
+            "./src/python/workshop",
+            "c:\\Users\\amudhapalani\\.vscode\\extensions\\ms-security.ms-sentinel-1.1.1\\python"
         ],
         "[python]": {
             "editor.defaultFormatter": "charliermarsh.ruff",

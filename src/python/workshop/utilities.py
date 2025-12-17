@@ -5,7 +5,7 @@ from typing import List
 from azure.ai.agents.aio import AgentsClient
 from azure.ai.agents.models import FileInfo, ThreadMessage, VectorStore
 from azure.core.exceptions import ClientAuthenticationError
-from azure.identity.aio import DefaultAzureCredential
+from azure.identity import InteractiveBrowserCredential
 from terminal_colors import TerminalColors as tc
 
 logger = logging.getLogger(__name__)
@@ -32,25 +32,24 @@ class Utilities:
         ]:
             logging.getLogger(name).setLevel(logging.WARNING)
 
-    async def validate_azure_authentication(self) -> DefaultAzureCredential:
+    async def validate_azure_authentication(self) -> InteractiveBrowserCredential:
         """Validate Azure authentication before proceeding."""
         try:
-            credential = DefaultAzureCredential()
-            # Test credential by getting a token
-            token = await credential.get_token("https://management.azure.com/.default")
+            credential = InteractiveBrowserCredential()
+            # Test credential by getting a token (sync call in async context is fine for initial auth)
+            token = credential.get_token("https://management.azure.com/.default")
+            logger.info("✅ Azure authentication successful")
             return credential
         except ClientAuthenticationError as e:
             logger.error("❌ Azure Authentication Failed")
-            logger.error("🔧 To fix this issue, please run the following command:")
-            logger.error("Azure CLI:")
-            logger.error("   az login --use-device-code")
+            logger.error("🔧 To fix this issue, please complete the browser authentication.")
             logger.error("After authentication, run the program again.")
             raise e
 
     @property
-    def get_credential(self) -> DefaultAzureCredential:
+    def get_credential(self) -> InteractiveBrowserCredential:
         """Get the Azure credential."""
-        return DefaultAzureCredential()
+        return InteractiveBrowserCredential()
 
     def load_instructions(self, instructions_file: str) -> str:
         """Load instructions from a file."""

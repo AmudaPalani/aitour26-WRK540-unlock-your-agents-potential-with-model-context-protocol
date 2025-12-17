@@ -65,6 +65,11 @@ class Config:
 
     def _compute_dev_tunnel_url(self) -> str:
         """Compute the dev tunnel URL at initialization time."""
+        # First try to get from environment variable
+        env_dev_tunnel_url = os.getenv("DEV_TUNNEL_URL")
+        if env_dev_tunnel_url:
+            return self._clean_env_value(env_dev_tunnel_url)
+        
         try:
             # Look for dev_tunnel.log in the shared scripts directory
             log_file_path = Path(__file__).parent / "dev_tunnel.log"

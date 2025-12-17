@@ -65,8 +65,8 @@ class AgentManager:
         )
         mcp_server_tools.set_approval_mode("never")  # No human in the loop
 
-        # self.toolset.add(code_interpreter_tool)
-        # self.toolset.add(mcp_server_tools)
+        self.toolset.add(code_interpreter_tool)
+        self.toolset.add(mcp_server_tools)
 
     def __init__(self) -> None:
         self.utilities = Utilities()
